@@ -3,3 +3,20 @@
 
 // Write your JavaScript code.
 
+window.showSwalWarning = function (message, title) {
+    if (!message) {
+        return;
+    }
+
+    if (typeof Swal === "undefined") {
+        alert(message);
+        return;
+    }
+
+    Swal.fire({
+        icon: "warning",
+        title: title || "Uyarı",
+        text: message,
+        confirmButtonText: "Tamam"
+    });
+};

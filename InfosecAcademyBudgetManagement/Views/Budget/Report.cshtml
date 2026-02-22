@@ -92,7 +92,7 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="~/lib/chart.js/dist/chart.umd.min.js"></script>
     <script>
         const monthLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthLabels));
         const plannedMonthlyTotals = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PlannedMonthlyTotals));
@@ -182,4 +182,5 @@
 }
     </script>
 }
+
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InfosecAcademyBudgetManagement.Data;
@@ -5,6 +6,7 @@ using InfosecAcademyBudgetManagement.Models;
 
 namespace InfosecAcademyBudgetManagement.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -173,4 +175,6 @@ namespace InfosecAcademyBudgetManagement.Controllers
         }
     }
 }
+
+
 

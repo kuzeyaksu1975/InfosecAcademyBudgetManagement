@@ -1,0 +1,97 @@
+@model InfosecAcademyBudgetManagement.Models.UserProfileViewModel
+@{
+    ViewData["Title"] = "Profil";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Profil</h1>
+        <div class="page-subtitle">Hesap güvenliği ve kimlik doğrulama ayarları.</div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card content-card h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Hesap Bilgileri</h2>
+                <dl class="row mb-0">
+                    <dt class="col-4">Ad Soyad</dt>
+                    <dd class="col-8">@Model.FullName</dd>
+                    <dt class="col-4">E-posta</dt>
+                    <dd class="col-8">@Model.Email</dd>
+                    <dt class="col-4">Departman</dt>
+                    <dd class="col-8">@(!string.IsNullOrWhiteSpace(Model.Department) ? Model.Department : "-")</dd>
+                    <dt class="col-4">2FA</dt>
+                    <dd class="col-8">@(Model.TwoFactorEnabled ? "Etkin" : "Devre dışı")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card content-card mb-4">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Şifre Değiştir</h2>
+                <form asp-action="ChangePassword" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                    <div class="mb-3">
+                        <label class="form-label">Mevcut Şifre</label>
+                        <input type="password" name="CurrentPassword" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Yeni Şifre</label>
+                        <input type="password" name="NewPassword" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Yeni Şifre (Tekrar)</label>
+                        <input type="password" name="ConfirmNewPassword" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Şifreyi Güncelle</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card content-card">
+            <div class="card-body">
+                <h2 class="h5 mb-3">İki Adımlı Doğrulama (2FA)</h2>
+@if (!Model.TwoFactorEnabled)
+{
+                <p class="text-muted">Google Authenticator ile 2FA etkinleştirmek için QR kodu okutun ve doğrulama kodunu girin.</p>
+                <div class="mb-3 text-center">
+                    <img src="data:image/png;base64,@Model.QrCodeImageBase64" alt="2FA QR Kod" class="img-fluid p-2 border rounded-3 bg-white" style="max-width: 260px;" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Gizli Anahtar</label>
+                    <input class="form-control" value="@Model.SharedKey" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">QR URI</label>
+                    <textarea class="form-control" rows="2" readonly>@Model.AuthenticatorUri</textarea>
+                </div>
+                <form asp-action="Enable2faFromProfile" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label">Doğrulama Kodu</label>
+                        <input type="text" name="Code" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-success">2FA Etkinleştir</button>
+                </form>
+}
+else
+{
+                <p class="text-muted">2FA şu anda aktif. İsterseniz devre dışı bırakabilirsiniz.</p>
+                <form asp-action="Disable2faFromProfile" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger">2FA Devre Dışı Bırak</button>
+                </form>
+}
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

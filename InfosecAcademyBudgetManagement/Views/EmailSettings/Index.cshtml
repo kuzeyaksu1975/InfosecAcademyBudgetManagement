@@ -1,0 +1,91 @@
+@model InfosecAcademyBudgetManagement.Models.EmailSettingsViewModel
+@{
+    ViewData["Title"] = "E-posta Ayarları";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">E-posta Ayarları</h1>
+        <div class="page-subtitle">SMTP hesap bilgilerini yönetin.</div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card content-card">
+            <div class="card-body">
+                <form asp-action="Index" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label asp-for="SmtpHost" class="form-label"></label>
+                            <input asp-for="SmtpHost" class="form-control" />
+                            <span asp-validation-for="SmtpHost" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="SmtpPort" class="form-label"></label>
+                            <input asp-for="SmtpPort" class="form-control" />
+                            <span asp-validation-for="SmtpPort" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-check mt-2">
+                                <input asp-for="EnableSsl" class="form-check-input" />
+                                <label asp-for="EnableSsl" class="form-check-label"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="SenderEmail" class="form-label"></label>
+                            <input asp-for="SenderEmail" class="form-control" />
+                            <span asp-validation-for="SenderEmail" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="SenderName" class="form-label"></label>
+                            <input asp-for="SenderName" class="form-control" />
+                            <span asp-validation-for="SenderName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Username" class="form-label"></label>
+                            <input asp-for="Username" class="form-control" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <div class="form-text">
+                                @if (Model.HasPassword)
+                                {
+                                    <text>Mevcut şifre kayıtlı. Değiştirmeyecekseniz boş bırakın.</text>
+                                }
+                                else
+                                {
+                                    <text>İlk kayıt için şifre zorunludur.</text>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label asp-for="TestRecipientEmail" class="form-label"></label>
+                            <input asp-for="TestRecipientEmail" class="form-control" />
+                            <span asp-validation-for="TestRecipientEmail" class="text-danger"></span>
+                            <div class="form-text">Girilen ayarlarla test e-postası bu adrese gönderilir.</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <button type="submit" class="btn btn-outline-secondary" asp-action="SendTestEmail" formnovalidate>Test E-postası Gönder</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

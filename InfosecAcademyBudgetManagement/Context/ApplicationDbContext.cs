@@ -1,10 +1,11 @@
 using Cost;
-using Microsoft.EntityFrameworkCore;
 using InfosecAcademyBudgetManagement.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace InfosecAcademyBudgetManagement.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -15,10 +16,27 @@ namespace InfosecAcademyBudgetManagement.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<BudgetPlan> BudgetPlans { get; set; }
         public DbSet<BudgetLine> BudgetLines { get; set; }
+        public DbSet<EmailAccountSetting> EmailAccountSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ApplicationUser>(entity =>
+            {
+                entity.Property(u => u.FirstName).HasMaxLength(50).IsRequired();
+                entity.Property(u => u.LastName).HasMaxLength(50).IsRequired();
+                entity.Property(u => u.Department).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<EmailAccountSetting>(entity =>
+            {
+                entity.Property(e => e.SmtpHost).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.SenderEmail).HasMaxLength(256).IsRequired();
+                entity.Property(e => e.SenderName).HasMaxLength(100);
+                entity.Property(e => e.Username).HasMaxLength(256).IsRequired();
+                entity.Property(e => e.EncryptedPassword).IsRequired();
+            });
 
             modelBuilder.Entity<CostItem>()
                 .Property(c => c.CategoryId)
@@ -39,4 +57,3 @@ namespace InfosecAcademyBudgetManagement.Data
         }
     }
 }
-

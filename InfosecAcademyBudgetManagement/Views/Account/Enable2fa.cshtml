@@ -1,0 +1,44 @@
+@model InfosecAcademyBudgetManagement.Models.Enable2faViewModel
+@{
+    ViewData["Title"] = "2FA Kurulumu";
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card content-card">
+            <div class="card-body">
+                <h1 class="h4 mb-3">Google Authenticator Kurulumu</h1>
+                <p>1. Google Authenticator uygulamasını açın.</p>
+                <p>2. Aşağıdaki QR kodu okutun veya gizli anahtarı manuel ekleyin.</p>
+                <div class="mb-3 text-center">
+                    <img src="data:image/png;base64,@Model.QrCodeImageBase64" alt="2FA QR Kod" class="img-fluid p-2 border rounded-3 bg-white" style="max-width: 260px;" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Gizli Anahtar</label>
+                    <input class="form-control" value="@Model.SharedKey" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">QR URI</label>
+                    <textarea class="form-control" rows="3" readonly>@Model.AuthenticatorUri</textarea>
+                </div>
+                <form asp-action="Enable2fa" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                    <input asp-for="SharedKey" type="hidden" />
+                    <input asp-for="AuthenticatorUri" type="hidden" />
+                    <input asp-for="QrCodeImageBase64" type="hidden" />
+                    <div class="mb-3">
+                        <label asp-for="Code" class="form-label"></label>
+                        <input asp-for="Code" class="form-control" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">2FA Etkinleştir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

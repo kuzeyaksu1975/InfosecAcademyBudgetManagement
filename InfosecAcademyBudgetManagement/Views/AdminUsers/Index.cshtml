@@ -1,0 +1,47 @@
+@model IEnumerable<InfosecAcademyBudgetManagement.Models.AdminUserListItemViewModel>
+@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Kullanıcı Yönetimi</h1>
+        <div class="page-subtitle">Admin ve kullanıcı hesaplarını yönetin.</div>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Yeni Kullanıcı</a>
+</div>
+
+<div class="card content-card">
+    <div class="card-body">
+        <table class="table table-striped align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>E-posta</th>
+                    <th>Ad Soyad</th>
+                    <th>Rol</th>
+                    <th>2FA</th>
+                    <th class="text-end">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+@foreach (var item in Model)
+{
+                <tr>
+                    <td>@item.Email</td>
+                    <td>@item.FullName</td>
+                    <td>@item.Role</td>
+                    <td>@(item.TwoFactorEnabled ? "Açık" : "Kapalı")</td>
+                    <td class="text-end">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Düzenle</a>
+                        <form asp-action="Delete" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                        </form>
+                    </td>
+                </tr>
+}
+            </tbody>
+        </table>
+    </div>
+</div>

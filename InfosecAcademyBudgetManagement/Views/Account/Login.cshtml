@@ -1,0 +1,48 @@
+@model InfosecAcademyBudgetManagement.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Giriş";
+}
+
+<div class="login-stage">
+    <div class="login-shell mx-auto">
+        <div class="login-head">
+            <div class="login-head-kicker">InfosecAcademyBudgetManagement</div>
+            <h1 class="login-head-title">Yönetim Paneli Girişi</h1>
+            <p class="login-head-subtitle">Hesabınızla giriş yaparak bütçe yönetimi ekranına devam edin.</p>
+        </div>
+
+        <div class="card content-card login-card">
+            <div class="card-body p-4 p-lg-5">
+                <div class="login-quick mb-4">
+                    <div class="small text-muted fw-semibold mb-1">Varsayılan Admin Girişi</div>
+                    <div><strong>E-posta:</strong> admin@local.test</div>
+                    <div><strong>Şifre:</strong> Admin123!</div>
+                </div>
+
+                <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control form-control-lg" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control form-control-lg" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-check mb-4">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label"></label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Giriş Yap</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

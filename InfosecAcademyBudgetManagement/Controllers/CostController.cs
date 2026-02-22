@@ -1,4 +1,5 @@
 using Cost;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -7,6 +8,7 @@ using InfosecAcademyBudgetManagement.Data;
 
 namespace InfosecAcademyBudgetManagement.Controllers
 {
+    [Authorize]
     public class CostController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -260,4 +262,6 @@ namespace InfosecAcademyBudgetManagement.Controllers
         }
     }
 }
+
+
 
