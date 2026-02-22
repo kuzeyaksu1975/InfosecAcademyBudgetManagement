@@ -36,6 +36,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
 });
 
 builder.Services.AddDataProtection();
@@ -60,6 +63,35 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Referrer-Policy"] = "no-referrer";
+    context.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+    context.Response.Headers["Content-Security-Policy"] =
+        "default-src 'self'; " +
+        "base-uri 'self'; " +
+        "frame-ancestors 'none'; " +
+        "object-src 'none'; " +
+        "form-action 'self'; " +
+        "script-src 'self' 'unsafe-inline'; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "img-src 'self' data:; " +
+        "font-src 'self' data:";
+
+    await next();
+});
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/uploads/expenses", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        return;
+    }
+
+    await next();
+});
 app.UseStaticFiles();
 
 app.UseRouting();

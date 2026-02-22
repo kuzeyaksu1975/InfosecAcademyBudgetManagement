@@ -14,12 +14,18 @@ namespace InfosecAcademyBudgetManagement.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IEmailPasswordProtector _passwordProtector;
         private readonly IEmailServiceHelper _emailServiceHelper;
+        private readonly ILogger<EmailSettingsController> _logger;
 
-        public EmailSettingsController(ApplicationDbContext context, IEmailPasswordProtector passwordProtector, IEmailServiceHelper emailServiceHelper)
+        public EmailSettingsController(
+            ApplicationDbContext context,
+            IEmailPasswordProtector passwordProtector,
+            IEmailServiceHelper emailServiceHelper,
+            ILogger<EmailSettingsController> logger)
         {
             _context = context;
             _passwordProtector = passwordProtector;
             _emailServiceHelper = emailServiceHelper;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -148,7 +154,8 @@ namespace InfosecAcademyBudgetManagement.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"Test e-postası gönderilemedi: {ex.Message}");
+                _logger.LogWarning(ex, "SMTP test e-postası gönderimi başarısız oldu. Host: {Host}, Kullanıcı: {Username}", model.SmtpHost, model.Username);
+                ModelState.AddModelError(string.Empty, "Test e-postası gönderilemedi. Ayarları kontrol edip tekrar deneyin.");
             }
 
             model.Password = string.Empty;

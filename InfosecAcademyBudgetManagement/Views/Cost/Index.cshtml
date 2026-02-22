@@ -57,7 +57,7 @@
                     <td>
                         @if (!string.IsNullOrWhiteSpace(item.DocumentPath))
                         {
-                            <a href="@item.DocumentPath" target="_blank" class="btn btn-sm btn-outline-secondary">
+                            <a asp-action="DownloadDocument" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
                                 <i class="bi bi-file-earmark-pdf"></i>
                             </a>
                         }
