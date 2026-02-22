@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using InfosecAcademyBudgetManagement.Data;
+using InfosecAcademyBudgetManagement.Models;
 
 namespace InfosecAcademyBudgetManagement.Controllers
 {
@@ -112,6 +113,63 @@ namespace InfosecAcademyBudgetManagement.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> DocumentViewer(int id)
+        {
+            var item = await _context.CostItems
+                .AsNoTracking()
+                .Include(c => c.Category)
+                .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted && !string.IsNullOrWhiteSpace(c.DocumentPath));
+
+            if (item is null)
+            {
+                return NotFound();
+            }
+
+            var (fullPath, exists) = ResolveDocumentPhysicalPath(item.DocumentPath!);
+            if (!exists)
+            {
+                return NotFound();
+            }
+
+            var model = new CostDocumentViewerViewModel
+            {
+                CostId = item.Id,
+                CostName = item.Name ?? "-",
+                CategoryName = item.Category?.Name ?? "-",
+                CostDate = item.Date,
+                DownloadFileName = string.IsNullOrWhiteSpace(item.DocumentName) ? "document.pdf" : Path.GetFileName(item.DocumentName)
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> StreamDocument(int id)
+        {
+            var item = await _context.CostItems
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted && !string.IsNullOrWhiteSpace(c.DocumentPath));
+
+            if (item is null)
+            {
+                return NotFound();
+            }
+
+            var (fullPath, exists) = ResolveDocumentPhysicalPath(item.DocumentPath!);
+            if (!exists)
+            {
+                return NotFound();
+            }
+
+            var contentType = string.IsNullOrWhiteSpace(item.DocumentContentType)
+                ? "application/pdf"
+                : item.DocumentContentType;
+
+            var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return File(stream, contentType, enableRangeProcessing: true);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> DownloadDocument(int id)
         {
             var item = await _context.CostItems
@@ -135,7 +193,7 @@ namespace InfosecAcademyBudgetManagement.Controllers
                 : item.DocumentContentType;
 
             var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            return File(stream, contentType, downloadName);
+            return File(stream, contentType, downloadName, enableRangeProcessing: true);
         }
 
         public async Task<IActionResult> Edit(int? id)

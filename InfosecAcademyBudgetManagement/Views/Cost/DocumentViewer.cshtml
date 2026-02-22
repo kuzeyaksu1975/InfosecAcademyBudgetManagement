@@ -1,0 +1,33 @@
+@model InfosecAcademyBudgetManagement.Models.CostDocumentViewerViewModel
+
+@{
+    ViewData["Title"] = "Evrak Görüntüleyici";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">PDF Evrak Görüntüleyici</h1>
+        <div class="page-subtitle">
+            @Model.CostName | @Model.CategoryName | @Model.CostDate.ToString("dd.MM.yyyy")
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="DownloadDocument" asp-route-id="@Model.CostId" class="btn btn-primary">
+            <i class="bi bi-download"></i> İndir
+        </a>
+        <a asp-action="Details" asp-route-id="@Model.CostId" class="btn btn-outline-secondary">
+            Detaya Dön
+        </a>
+    </div>
+</div>
+
+<div class="card content-card">
+    <div class="card-body p-0">
+        <iframe
+            src="@Url.Action("StreamDocument", "Cost", new { id = Model.CostId })"
+            title="PDF Evrak"
+            style="width:100%; height:78vh; border:0;"
+            loading="lazy">
+        </iframe>
+    </div>
+</div>

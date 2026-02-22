@@ -33,7 +33,7 @@
             <dd class="col-sm-9">
                 @if (!string.IsNullOrWhiteSpace(Model.DocumentPath))
                 {
-                    <a asp-action="DownloadDocument" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
+                    <a asp-action="DocumentViewer" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
                         <i class="bi bi-file-earmark-pdf"></i> PDF Görüntüle
                     </a>
                 }
